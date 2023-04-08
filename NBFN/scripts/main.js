@@ -3,7 +3,7 @@ function initTable(filterList) {
     document.getElementById("loadingMessage").className = "";
 
     $(document).ready(function () {
-        $.getJSON("../data/nam_dict.json", 
+        $.getJSON("/NBFN/data/nam_dict.json", 
                 function (data) {
             let allNames = [];
 

@@ -182,7 +182,7 @@ td.tableRow2 {
 }
 
 .about h1 {
-    text-align: center;
+    margin-left: 2%;
     color: var(--about-text-color);
 }
 

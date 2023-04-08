@@ -1,0 +1,393 @@
+:root {
+    --about-text-color: ivory;
+}
+
+@media (max-width: 1279px) {
+    .tableSpace {
+        flex-direction: column;
+    }
+
+    .about {
+        order: 1;
+        margin-bottom: 5%;
+    }
+
+    #filtersColumn {
+        order: 2;
+        margin-bottom: 5%;
+    }
+
+    .tableColumn {
+        order: 3;
+    }
+}
+
+body {
+    background-color: #f9aec4;
+    margin-top: 0px;
+}
+
+details {
+    user-select: none;
+}
+
+span {
+    z-index: 9;
+    display: none;
+    position: absolute;
+    background-color: antiquewhite;
+    border-radius: 7px;
+    border: 1px solid black;
+}
+
+img.icon {
+    height: 48px;
+    margin-left: auto;
+    margin-right: 15px;
+    margin-top: auto;
+    margin-bottom: auto;
+    transition: all 0.2s;
+}
+
+details[open] img.icon {
+    transform: rotate(-90deg);
+}
+
+summary {
+    display: flex;
+    cursor: pointer;
+}
+
+summary::-webkit-details-marker {
+    display: none;
+}
+
+th {
+    border-right: solid 1px black;
+    border-left: solid 1px black;
+    border-top: solid 1px black;
+}
+
+#name {
+    width: 200px;
+    text-align: left;
+    border-radius: 15px 0px 0px 0px;
+}
+
+#gender {
+    width: max-content;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+#cvbs {
+    width: max-content;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+#raritySelector {
+    position: relative;
+    width: max-content;
+    border-radius: 0px 15px 0px 0px;
+}
+
+#rarityLoading {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 3px;
+    margin: auto;
+}
+
+.nameColumn {
+    text-align: left;
+}
+
+.genderColumn {
+    text-align: center;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+.cvbColumn {
+    text-align: center;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+.rarityColumn {
+    text-align: center;
+    position: relative;
+}
+
+.rarityInfoBtn img {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    margin: auto;
+    padding-left: 4px;
+}
+
+.rarityInfoBtn span {
+    width: max-content;
+    top: 24px;
+    left: -95px;
+}
+
+.rarityInfoBtn:hover span {
+    display: block;
+    text-align: center;
+}
+
+
+td.tableRow1 {
+    border: solid 1px rgb(141, 58, 182);
+}
+
+td.tableRow1.rarityColumn {
+    border-right: 0px;
+}
+
+td.tableRow2.rarityColumn {
+    border-right: 0px;
+}
+
+td.tableRow1.nameColumn {
+    border-left: 0px;
+}
+
+td.tableRow2.nameColumn {
+    border-left: 0px;
+}
+
+td.tableRow2 {
+    border: solid 1px rgb(141, 58, 182);
+}
+
+.tableSpace {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.about {
+    flex-basis: 30%;
+    height: fit-content;
+    background-color: rgb(164, 87, 237);
+    border-radius: 15px;
+    border: 1px solid black;
+}
+
+.about h1 {
+    text-align: center;
+    color: var(--about-text-color);
+}
+
+.about h2 {
+    margin-left: 5%;
+    color: var(--about-text-color);
+}
+
+.about h4 {
+    margin-left: 10%;
+    margin-right: 5%;
+    color: var(--about-text-color);
+}
+
+#filtersColumn {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 30%;
+}
+
+#filters {
+    display: flex;
+    flex-direction: column;
+}
+
+#addFilter {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 5%;
+    width: fit-content;
+    padding: 2%;
+}
+
+#applyFilters {
+    margin-left: auto;
+    margin-right: auto;
+    width: fit-content;
+    padding-left: 6%;
+    padding-right: 6%;
+    padding-top: 2%;
+    padding-bottom: 2%;
+    border-radius: 5px;
+    background-color: aquamarine;
+    border: solid 1px black;
+    cursor: pointer;
+}
+
+#applyFilters:hover {
+    background-color: rgb(79, 238, 185);
+}
+
+#applyFilters:active {
+    background-color: rgb(28, 228, 161);
+}
+
+.filter {
+    position: relative;
+    width: 100%;
+    background-color: aliceblue;
+    border: 1px solid black;
+    height: 50px;
+    line-height: 50px;
+    border-radius: 5px;
+    margin-bottom: 5%;
+    text-align: center;
+}
+
+.compareSelector {
+    margin-right: 1%;
+}
+
+.nameFilterInput {
+    width: max-content;
+}
+
+.nameLengthInput {
+    width: 6%;
+}
+
+.cvbFilterInput {
+    width: 4%;
+}
+
+.rarityFilterInput {
+    text-align: right;
+    width: 10%;
+}
+
+.countrySelect {
+    width: 27%;
+}
+
+.btns {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    top: 0;
+    right: 0;
+    padding-right: 2px;
+}
+
+.delBtn {
+    width: 16px;
+    height: 16px;
+}
+
+.arrowBtn {
+    align-self: center;
+    width: 10px;
+    height: 10px;
+    padding-top: 2px;
+}
+
+.filterInfoBtn img {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 0;
+    left: 0;
+    padding: 2px;
+}
+
+.filterInfoBtn span {
+    width: 80%;
+    top: 24px;
+    line-height: normal;
+}
+
+.filterInfoBtn:hover span {
+    display: block;
+    text-align: center;
+}
+
+.tableColumn {
+    flex-basis: 35%;
+}
+
+.table {
+    table-layout: fixed;
+    background-color: rgb(221, 85, 217);
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 15px;
+}
+
+.tableHeaderRow {
+    background-color: deeppink;
+}
+
+.tableRow1 {
+    background-color: #ff89eb;
+}
+
+.tableRow2 {
+    background-color: #ff60d5;
+}
+
+#countrySelector {
+    width: 52%;
+}
+
+#jsonDiv {
+    height: 85vh;
+    overflow-y: auto;
+    border-radius: 0px 0px 15px 15px;
+    border: solid 1px rgb(141, 58, 182);
+}
+
+#jsonDivTr {
+    height: 85vh;
+}
+
+#loadingMessage {
+    position: relative;
+    top: 20vh;
+    height: 0px;
+    margin-top: auto;
+    margin-bottom: auto;
+    text-align: center;
+}
+
+.title {
+    padding-top: 25px;
+    padding-bottom: 25px;
+    width: fit-content;
+    height: 48px;
+    margin: auto;
+}
+
+#titleIcon {
+    display: inline;
+}
+
+#titleText {
+    font-family: sans-serif;
+    position: relative;
+    display: inline;
+    padding-left: 8px;
+    margin-bottom: 0px;
+    margin-top: 0px;
+    vertical-align: text-bottom;
+}
+
+.hidden {
+    visibility: hidden;
+}

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Name Browser for Nerds</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="imgs/icon.png">
+    <meta charset="UTF-8">
+    <script src="deps/jquery-3.6.3.min.js"></script>
+</head>
+
+<body onresize="resizeTable()">
+    <div class="title">
+        <img src="imgs/icon.png" id="titleIcon" loading="eager">
+        <h1 id="titleText">Name Browser for Nerds</h1>
+    </div>
+    <div class="tableSpace">
+        <div class="about">
+            <details>
+                <summary>
+                    <h1>About this page<br></h1>
+                    <img class="icon" src="imgs/triangle.png"></img>
+                </summary>
+                <h2>Filter Explanation<br></h2>
+                <h4>
+                    Almost all filters work on an "and" based system, however the regular Name Content and Gender filters
+                    work on an "or" based system, within their respective filter group. This means that, should you wish to
+                    include for example both names that start with the letter A and ones that start with the letter B, you can
+                    do so by creating multiple Name Content filters.<br>
+                    You can change the priority of filters by clicking the up/down arrows on the right, below the trash bin icons.
+                    This only has an effect for sorting filters. Should you, for example, give sorting by rarity a higher priority
+                    than sorting by name, entries of the same rarity will be sorted by name. In actuality this means that the
+                    filters get executed in reverse, which is a little confusing but it works.
+                </h4>
+                <h2>Why this site exists<br></h2>
+                <h4>
+                    I know quite a few trans people who are still struggling to pick a name. Being a trans woman myself I have also
+                    noticed that a lot of popular sites are very annoying to use. This site is intended to serve as a simple alternative,
+                    without bloat, ads, or other annoyances.
+                </h4>
+                <h2>Name Data<br></h2>
+                <h4>
+                    Obtained from <a href="https://ftp.heise.de/ct/listings/0717-182.zip">ftp.heise.de/ct/listings/0717-182.zip</a>
+                    (&copy; 2007-2008 Jörg MICHAEL, Adalbert-Stifter-Str. 11, 30655 Hannover, Germany)
+                    and processed into <a href="/data/nam_dict.json">nam_dict.json</a>, which is also available under the
+                    <a href="https://www.gnu.org/licenses/fdl-1.3.en.html">GNU FDL</a>.
+                </h4>
+            </details>
+        </div>
+        <div class="tableColumn">
+            <table class="table" cellspacing="0" cellpadding="0">
+                <tr>
+                    <td>
+                        <table cellspacing="0" cellpadding="1">
+                            <tr>
+                                <th id="name">Name</th>
+                                <th id="gender">Gender</th>
+                                <th id="cvbs">CVBs</th>
+                                <th id="raritySelector">
+                                    <div id="rarityLoading" class="hidden">
+                                        Loading...
+                                    </div>
+                                    <div id="raritySelection">
+                                        Rarity in
+                                        <select onchange="loadRarities()" id="countrySelector">
+                                            <option value="Albania">Albania</option>
+                                            <option value="Arabia/Persia">Arabia/Persia</option>
+                                            <option value="Armenia">Armenia</option>
+                                            <option value="Austria">Austria</option>
+                                            <option value="Azerbaijan">Azerbaijan</option>
+                                            <option value="Belarus">Belarus</option>
+                                            <option value="Belgium">Belgium</option>
+                                            <option value="Bosnia and Herzegovina">Bosnia & Herzegovina</option>
+                                            <option value="Bulgaria">Bulgaria</option>
+                                            <option value="China">China</option>
+                                            <option value="Croatia">Croatia</option>
+                                            <option value="Czech Republic">Czech Republic</option>
+                                            <option value="Denmark">Denmark</option>
+                                            <option value="East Frisia">East Frisia</option>
+                                            <option value="Estonia">Estonia</option>
+                                            <option value="Finland">Finland</option>
+                                            <option value="France">France</option>
+                                            <option value="Georgia">Georgia</option>
+                                            <option value="Germany">Germany</option>
+                                            <option value="Great Britain">Great Britain</option>
+                                            <option value="Greece">Greece</option>
+                                            <option value="Hungary">Hungary</option>
+                                            <option value="Iceland">Iceland</option>
+                                            <option value="India/Sri Lanka">India/Sri Lanka</option>
+                                            <option value="Ireland">Ireland</option>
+                                            <option value="Israel">Israel</option>
+                                            <option value="Italy">Italy</option>
+                                            <option value="Japan">Japan</option>
+                                            <option value="Kazakhstan/Uzbekistan,etc.">Kazakhstan/Uzbekistan,etc.</option>
+                                            <option value="Korea">Korea</option>
+                                            <option value="Kosovo">Kosovo</option>
+                                            <option value="Latvia">Latvia</option>
+                                            <option value="Lithuania">Lithuania</option>
+                                            <option value="Luxembourg">Luxembourg</option>
+                                            <option value="Macedonia">Macedonia</option>
+                                            <option value="Malta">Malta</option>
+                                            <option value="Moldova">Moldova</option>
+                                            <option value="Montenegro">Montenegro</option>
+                                            <option value="The Netherlands">Netherlands</option>
+                                            <option value="Norway">Norway</option>
+                                            <option value="Poland">Poland</option>
+                                            <option value="Portugal">Portugal</option>
+                                            <option value="Romania">Romania</option>
+                                            <option value="Russia">Russia</option>
+                                            <option value="Serbia">Serbia</option>
+                                            <option value="Slovakia">Slovakia</option>
+                                            <option value="Slovenia">Slovenia</option>
+                                            <option value="Spain">Spain</option>
+                                            <option value="Sweden">Sweden</option>
+                                            <option value="Swiss">Swiss</option>
+                                            <option value="Turkey">Turkey</option>
+                                            <option value="U.S.A." selected>U.S.A.</option>
+                                            <option value="Ukraine">Ukraine</option>
+                                            <option value="Vietnam">Vietnam</option>
+                                        </select>
+                                    </div>
+                                </th>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr id="jsonDivTr">
+                    <td>
+                        <div id="jsonDiv">
+                            <h2 id="loadingMessage">Loading data...</h2>
+                            <table id="jsonContent" cellspacing="0" cellpadding="1">
+                                <script src="/scripts/main.js"></script>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id="filtersColumn">
+            <div id="filters">
+                <!--JS will insert filters here-->
+            </div>
+            <select id="addFilter" onchange="addFilter()">
+                <option value="std" selected>Add Filter</option>
+                <optgroup label="Filters">
+                    <option value="nameSearch">Name Content</option>
+                    <option value="nameLength">Name Length</option>
+                    <option value="genderFilter">Gender</option>
+                    <option value="CVBFilter">CVB Count</option>
+                    <option value="rarityFilter">Rarity</option>
+                </optgroup>
+                <optgroup label="Reverse Filters">
+                    <option value="revNameSearch">Name Content</option>
+                    <option value="revGenderFilter">Gender</option>
+                </optgroup>
+                <optgroup label="Sorting">
+                    <option value="nameSort">Name</option>
+                    <option value="cvbSort">CVB Count</option>
+                    <option value="raritySort">Rarity</option>
+                </optgroup>
+            </select>
+            <button id="applyFilters" onclick="initTable()">Apply Filters</button>
+        </div>
+    </div>
+</body>
+
+</html>

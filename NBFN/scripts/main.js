@@ -68,7 +68,7 @@ function loadRarities() {
     const rarities = document.querySelectorAll('.rarity');
     let i = 0;
     $(document).ready(function () {
-        $.getJSON("../data/nam_dict.json", 
+        $.getJSON("/NBFN/data/nam_dict.json", 
                 function (data) {
                     rarities.forEach(rarity => {
                         tempRarity = data[textNames[i]].Rarities[selectedCountry];

@@ -39,7 +39,7 @@ function initTable(filterList) {
 
             alternatingColor = "tableRow2";
             loadedRows = 0;
-            for (var i = 0; i < allRows.length && i < 100; i++) {
+            for (var i = 0; i < allRows.length && i < startRows; i++) {
                 addRow();
             }
             document.getElementById("loadingMessage").className = "hidden";
@@ -61,7 +61,7 @@ function addRow() {
 }
 
 function loadRows(table) {
-    const toAdd = table.scrollTop / 20 - (loadedRows - 100);
+    const toAdd = table.scrollTop / 20 - (loadedRows - startRows);
 
     for (var i = 0; i < allRows.length && i < toAdd; i++) {
         addRow();
@@ -638,4 +638,5 @@ var allRows;
 var loadedRows;
 var alternatingColor;
 const jsonContent = document.getElementById('jsonContent');
+const startRows = 50;
 initTable();

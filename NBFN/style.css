@@ -2,26 +2,6 @@
     --about-text-color: ivory;
 }
 
-@media (max-width: 1279px) {
-    .tableSpace {
-        flex-direction: column;
-    }
-
-    .about {
-        order: 1;
-        margin-bottom: 5%;
-    }
-
-    #filtersColumn {
-        order: 2;
-        margin-bottom: 5%;
-    }
-
-    .tableColumn {
-        order: 3;
-    }
-}
-
 body {
     background-color: #f9aec4;
     margin-top: 0px;
@@ -392,4 +372,38 @@ td.tableRow2 {
 
 .hidden {
     visibility: hidden;
+}
+
+@media (max-width: 1279px) {
+    .tableSpace {
+        flex-direction: column;
+    }
+
+    .about {
+        order: 1;
+        margin-bottom: 5%;
+    }
+
+    #filtersColumn {
+        order: 2;
+        margin-bottom: 5%;
+    }
+
+    .tableColumn {
+        order: 3;
+    }
+
+    .btns {
+        flex-direction: row-reverse;
+    }
+
+    .delBtn {
+        padding-left: 30px;
+    }
+
+    .arrowBtn {
+        padding-left: 10px;
+        padding-top: 4px;
+        align-self: normal;
+    }
 }

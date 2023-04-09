@@ -1,50 +1,54 @@
-function initTable(filterList) {
+async function loadJSON() {
+    const rawData = await fetch("/NBFN/data/nam_dict.json");
+    neatData = await rawData.json();
+}
+
+async function initTable(filterList) {
+    if (!neatData) {
+        await loadJSON();
+    }
+
     document.getElementById("jsonContent").innerHTML = "";
     document.getElementById("loadingMessage").className = "";
 
-    $(document).ready(function () {
-        $.getJSON("/NBFN/data/nam_dict.json", 
-                function (data) {
-            allRows = [];
+    allRows = [];
 
-            $.each(data, function (key, value) {
-                if (checkFilters(key, value.Gender, value.CVBs, value.Rarities))
-                {
-                    let nameData = document.createElement('tr');
-                    nameData.innerHTML += '<td class="name nameColumn">' + 
-                        key + '</td>';
+    for (const [key, value] of Object.entries(neatData)) {
+        if (checkFilters(key, value.Gender, value.CVBs, value.Rarities))
+        {
+            let nameData = document.createElement('tr');
+            nameData.innerHTML += '<td class="name nameColumn">' + 
+                key + '</td>';
 
-                    nameData.innerHTML += '<td class="genderColumn">' + 
-                        value.Gender + '</td>';
+            nameData.innerHTML += '<td class="genderColumn">' + 
+                value.Gender + '</td>';
 
-                    nameData.innerHTML += '<td class="cvbColumn">' + 
-                        value.CVBs + '</td>';
+            nameData.innerHTML += '<td class="cvbColumn">' + 
+                value.CVBs + '</td>';
 
-                    let allRarities = "";
-                    $.each (value.Rarities, function (r1, r2) {
-                        allRarities += r1 + ": " + r2 + "<br>";
-                    });
-                    let rarity = value.Rarities[document.getElementById("countrySelector").value];
-                    if (rarity == undefined) {
-                        rarity = "?";
-                    }
-                    nameData.innerHTML += '<td class="rarity rarityColumn">' + 
-                        rarity + '<div class=rarityInfoBtn><img src="imgs/info.png"><span>' +
-                        allRarities + '</span></td>';
-                    allRows.push(nameData);
-                }
-            });
-
-            allRows = sortEntries(allRows);
-
-            alternatingColor = "tableRow2";
-            loadedRows = 0;
-            for (var i = 0; i < allRows.length && i < startRows; i++) {
-                addRow();
+            let allRarities = "";
+            for (const [r1, r2] of Object.entries(value.Rarities)) {
+                allRarities += r1 + ": " + r2 + "<br>";
             }
-            document.getElementById("loadingMessage").className = "hidden";
-        });
-    });
+            let rarity = value.Rarities[document.getElementById("countrySelector").value];
+            if (rarity == undefined) {
+                rarity = "?";
+            }
+            nameData.innerHTML += '<td class="rarity rarityColumn">' + 
+                rarity + '<div class=rarityInfoBtn><img src="imgs/info.png"><span>' +
+                allRarities + '</span></td>';
+            allRows.push(nameData);
+        }
+    }
+
+    allRows = await sortEntries(allRows);
+
+    alternatingColor = "tableRow2";
+    loadedRows = 0;
+    for (var i = 0; i < allRows.length && i < startRows; i++) {
+        addRow();
+    }
+    document.getElementById("loadingMessage").className = "hidden";
 }
 
 function addRow() {
@@ -82,20 +86,16 @@ function loadRarities() {
 
     const rarities = document.querySelectorAll('.rarity');
     let i = 0;
-    $(document).ready(function () {
-        $.getJSON("/NBFN/data/nam_dict.json", 
-                function (data) {
-                    rarities.forEach(rarity => {
-                        tempRarity = data[textNames[i]].Rarities[selectedCountry];
-                        if (tempRarity == undefined) tempRarity = "?";
-                        tempRarity += rarity.querySelector(".rarityInfoBtn").outerHTML;
-                        rarity.innerHTML = tempRarity;
-                        i += 1;
-                    });
-                    document.getElementById('rarityLoading').classList = "hidden";
-                    document.getElementById('raritySelection').classList = "";
-                });
+    rarities.forEach(rarity => {
+        tempRarity = neatData[textNames[i]].Rarities[selectedCountry];
+        if (tempRarity == undefined) tempRarity = "?";
+        tempRarity += rarity.querySelector(".rarityInfoBtn").outerHTML;
+        rarity.innerHTML = tempRarity;
+        i += 1;
     });
+
+    document.getElementById('rarityLoading').classList = "hidden";
+    document.getElementById('raritySelection').classList = "";
 }
 
 function addFilter() {
@@ -337,7 +337,7 @@ function moveFilterDown(elem) {
     elem.querySelectorAll('.arrowBtn')[1].src = "imgs/down_arrow.png";
 }
 
-function checkFilters(name, gender, cvbs, rarities) {
+async function checkFilters(name, gender, cvbs, rarities) {
     if (filters.length == 0) {
         return true;
     }
@@ -346,18 +346,18 @@ function checkFilters(name, gender, cvbs, rarities) {
     let nameFilters = [];
     let genderFilters = [];
 
-    filtersList.forEach(filter => {
+    filtersList.forEach(async filter => {
         switch (filter[0]) {
             case 'nameSearch':
                 nameFilters.push(filter[1].value);
                 break;
 
             case 'revNameSearch':
-                currentState &&= !nameContains(name, filter[1].value);
+                currentState &&= !await nameContains(name, filter[1].value);
                 break;
 
             case 'nameLength':
-                currentState &&= checkNameLengthFilter(name, filter);
+                currentState &&= await checkNameLengthFilter(name, filter);
                 break;
 
             case 'genderFilter':
@@ -369,31 +369,31 @@ function checkFilters(name, gender, cvbs, rarities) {
                 break;
 
             case 'CVBFilter':
-                currentState &&= checkCVBFilter(cvbs, filter);
+                currentState &&= await checkCVBFilter(cvbs, filter);
                 break;
 
             case 'rarityFilter':
-                currentState &&= checkRarityFilter(rarities, filter);
+                currentState &&= await checkRarityFilter(rarities, filter);
                 break;
         }
     });
 
     if (nameFilters.length > 0) {
-        currentState &&= checkNameFilters(name, nameFilters);
+        currentState &&= await checkNameFilters(name, nameFilters);
     }
 
     if (genderFilters.length > 0) {
-        currentState &&= checkGenderFilters(gender, genderFilters);
+        currentState &&= await checkGenderFilters(gender, genderFilters);
     }
 
     return currentState;
 }
 
-function checkNameFilters(name, filters) {
+async function checkNameFilters(name, filters) {
     let i = 0
 
     while (i < filters.length) {
-        if (nameContains(name, filters[i])) {
+        if (await nameContains(name, filters[i])) {
             return true;
         }
         i++;
@@ -402,7 +402,7 @@ function checkNameFilters(name, filters) {
     return false;
 }
 
-function nameContains(name, str) {
+async function nameContains(name, str) {
     let nameIndex = 0;
     let strIndex = 0;
     let afterAny = false;
@@ -421,7 +421,7 @@ function nameContains(name, str) {
 
             default:
                 if (afterAny) {
-                    if ((nameIndex = findNext(name, str[strIndex], nameIndex)) == -1) {
+                    if ((nameIndex = await findNext(name, str[strIndex], nameIndex)) == -1) {
                         return false;
                     }
 
@@ -445,7 +445,7 @@ function nameContains(name, str) {
     return true;
 }
 
-function findNext(str, c, index) {
+async function findNext(str, c, index) {
     let i = index;
     while (i < str.length) {
         if (str[i] == c) {
@@ -457,7 +457,7 @@ function findNext(str, c, index) {
     return -1;
 }
 
-function checkNameLengthFilter(name, filter) {
+async function checkNameLengthFilter(name, filter) {
     if (filter[1].value == "<") {
         return name.length < parseInt(filter[2].value);
     }
@@ -465,7 +465,7 @@ function checkNameLengthFilter(name, filter) {
     return name.length > parseInt(filter[2].value);
 }
 
-function checkGenderFilters(gender, filters) {
+async function checkGenderFilters(gender, filters) {
     let i = 0;
 
     while (i < filters.length) {
@@ -479,21 +479,21 @@ function checkGenderFilters(gender, filters) {
     return false;
 }
 
-function checkCVBFilter(cvbs, filter) {
+async function checkCVBFilter(cvbs, filter) {
     if (filter[1].value == "<") {
         return cvbs < parseInt(filter[2].value);
     }
     return cvbs > parseInt(filter[2].value);
 }
 
-function checkRarityFilter(rarities, filter) {
+async function checkRarityFilter(rarities, filter) {
     let toCompare;
 
     toCompare = rarities[filter[3].value];
     if (toCompare == undefined) {
         return false;
     }
-    toCompare = toCompare.substring(1, toCompare.length-1);
+    toCompare = await toCompare.substring(1, toCompare.length-1);
 
     if (filter[1].value == "<") {
         return toCompare < parseFloat(filter[2].value);
@@ -501,13 +501,13 @@ function checkRarityFilter(rarities, filter) {
     return toCompare > parseFloat(filter[2].value);
 }
 
-function sortEntries(entries) {
+async function sortEntries(entries) {
     if (filtersList.length > 0) {
         const sortedNames = [];
 
-        if (hasAlphabeticSorting) {
-            entries.forEach(entry => {
-                sortedNames.push(entry.querySelector('.name').innerHTML);
+        if (await hasAlphabeticSorting()) {
+            await entries.forEach(async entry => {
+                sortedNames.push(await entry.querySelector('.name').innerHTML);
             });
         }
 
@@ -518,12 +518,12 @@ function sortEntries(entries) {
                 case 'A-Z':
                 case 'Z-A':
                     //sanitize input
-                    entries.forEach(entry => {
+                    await entries.forEach(async entry => {
                         const name = entry.querySelector('.name');
                         name.innerHTML = sortedNames.indexOf(name.innerHTML);
                     });
 
-                    entries = mergeSort(entries, extractNameNum, filter[1].value == 'Z-A');
+                    entries = await mergeSort(entries, extractNameNum, filter[1].value == 'Z-A');
 
                     //unsanitize
                     entries.forEach(entry => {
@@ -534,17 +534,17 @@ function sortEntries(entries) {
 
                 case 'lenAsc':
                 case 'lenDesc':
-                    entries = mergeSort(entries, extractNameLen, filter[1].value == 'lenDesc');
+                    entries = await mergeSort(entries, extractNameLen, filter[1].value == 'lenDesc');
                     break;
 
                 case 'cvbAsc':
                 case 'cvbDesc':
-                    entries = mergeSort(entries, extractCVBCount, filter[1].value == 'cvbDesc');
+                    entries = await mergeSort(entries, extractCVBCount, filter[1].value == 'cvbDesc');
 
                 case 'rarityAsc':
                 case 'rarityDesc':
                     sortingCountry = filter;
-                    entries = mergeSort(entries, extractRarity, filter[1].value == 'rarityDesc');
+                    entries = await mergeSort(entries, extractRarity, filter[1].value == 'rarityDesc');
             }
         }
     }
@@ -552,7 +552,7 @@ function sortEntries(entries) {
     return entries;
 }
 
-function hasAlphabeticSorting() {
+async function hasAlphabeticSorting() {
     for (var i = 0; i < filtersList.length; i++) {
         if (filtersList[i][1].value == 'A-Z' || filtersList[i][1].value == 'Z-A') {
             return true;
@@ -562,54 +562,54 @@ function hasAlphabeticSorting() {
     return false;
 }
 
-function extractNameNum(arg) {
-    return parseInt(arg.querySelector('.name').innerHTML);
+async function extractNameNum(arg) {
+    return parseInt(await arg.querySelector('.name').innerHTML);
 }
 
-function extractNameLen(arg) {
-    return arg.querySelector('.name').innerHTML.length;
+async function extractNameLen(arg) {
+    return await arg.querySelector('.name').innerHTML.length;
 }
 
-function extractCVBCount(arg) {
-    return parseInt(arg.querySelector('.cvbColumn').innerHTML);
+async function extractCVBCount(arg) {
+    return parseInt(await arg.querySelector('.cvbColumn').innerHTML);
 }
 
-function extractRarity(arg, reverse) {
-    const rarities = arg.querySelector('span').innerHTML.split("<br>");
+async function extractRarity(arg) {
+    const rarities = await arg.querySelector('span').innerHTML.split("<br>");
 
     for (var i = 0; i < rarities.length-1; i++) {
-        const splitRarity = rarities[i].split(": ");
-        splitRarity[1] = splitRarity[1].replace("&lt;", "<").replace("&gt;", ">");
+        const splitRarity = await rarities[i].split(": ");
+        splitRarity[1] = await splitRarity[1].replace("&lt;", "<").replace("&gt;", ">");
 
         if (splitRarity[0] == sortingCountry[2].value) {
-            return parseFloat(splitRarity[1].substring(1, splitRarity[1].length-1));
+            return parseFloat(await splitRarity[1].substring(1, splitRarity[1].length-1));
         }
     }
 
     //make question marks appear at the bottom
     if (sortingCountry[1].value == "rarityDesc") {
-        return 0;
+        return -1;
     }
-    return 20;
+    return 101;
 }
 
-function mergeSort(entries, extractInfo, reverse) {
+async function mergeSort(entries, extractInfo, reverse) {
     if (entries.length < 2) {
         return entries;
     }
 
-    const left = entries.splice(0, entries.length / 2);
-    return merge(mergeSort(left, extractInfo, reverse), mergeSort(entries, extractInfo, reverse), extractInfo, reverse);
+    const left = await entries.splice(0, entries.length / 2);
+    return await merge(await mergeSort(left, extractInfo, reverse), await mergeSort(entries, extractInfo, reverse), extractInfo, reverse);
 }
 
-function merge(left, right, extractInfo, reverse) {
+async function merge(left, right, extractInfo, reverse) {
     const arr = [];
 
     while (left.length && right.length) {
-        if ((!reverse && extractInfo(left[0]) < extractInfo(right[0])) || (reverse && extractInfo(left[0]) > extractInfo(right[0])) || (extractInfo(left[0]) == extractInfo(right[0]))) {
-            arr.push(left.shift());
+        if ((!reverse && await extractInfo(left[0]) < await extractInfo(right[0])) || (reverse && await extractInfo(left[0]) > await extractInfo(right[0])) || (await extractInfo(left[0]) == await extractInfo(right[0]))) {
+            arr.push(await left.shift());
         } else {
-            arr.push(right.shift());
+            arr.push(await right.shift());
         }
     }
 
@@ -639,4 +639,5 @@ var loadedRows;
 var alternatingColor;
 const jsonContent = document.getElementById('jsonContent');
 const startRows = 50;
+var neatData;
 initTable();

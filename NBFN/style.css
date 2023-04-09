@@ -352,20 +352,16 @@ td.tableRow2 {
 }
 
 #jsonDiv {
-    height: 85vh;
+    height: 900px;
     overflow-y: auto;
     overflow: overlay;
     border-radius: 0px 0px 15px 15px;
     border: solid 1px rgb(141, 58, 182);
 }
 
-#jsonDivTr {
-    height: 85vh;
-}
-
 #loadingMessage {
     position: relative;
-    top: 20vh;
+    top: 300px;
     height: 0px;
     margin-top: auto;
     margin-bottom: auto;

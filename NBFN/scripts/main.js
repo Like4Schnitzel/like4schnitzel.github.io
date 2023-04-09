@@ -127,7 +127,7 @@ function addFilter() {
             input.classList.add('nameFilterInput');
             input.setAttribute('type', 'text');
 
-            newFilter.innerHTML += `<div class="filterInfoBtn"><img src="imgs/info.png"><span>This will only include entries where the name ` + (addFilter.value == "revNameSearch" ? "doesn't match" : "matches") + ` the provided string. The input is case sensitive. You may use the # character to substitute for any character (i.e. "Max" matches "M#x"). You may also use the * character to substitute for any string (i.e. "Maximilian" matches "M*ian"). If you want to include names containing a string you can put a * at the beginning and end of it (i.e. "Maximilian" matches "*axim*").</span></div>`;
+            newFilter.innerHTML += `<div class="filterInfoBtn"><img src="imgs/info.png"><span>This will only include entries where the name ` + (addFilter.value == "revNameSearch" ? "doesn't match" : "matches") + ` the provided string. The input is case sensitive. You may use the # character to substitute for any character (i.e. "Max" matches "M#x"). You may also use the * character to substitute for any string (i.e. "Maximilian" matches "M*ian"). If you want to ` + (addFilter.value == "revNameSearch" ? "exclude" : "include") + ` names containing a string, you can put a * at the beginning and end of it (i.e. "Maximilian" matches "*axim*").</span></div>`;
             newFilter.innerHTML += `<div class="filterContent"><a>` + (addFilter.value == 'revNameSearch' ? 'Rev ' : '') +`Name Filter: </a></div>`;
 
             newFilter.querySelector('.filterContent').appendChild(input);

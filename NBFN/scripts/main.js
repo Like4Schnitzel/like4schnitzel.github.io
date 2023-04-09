@@ -5,7 +5,7 @@ function initTable(filterList) {
     $(document).ready(function () {
         $.getJSON("/NBFN/data/nam_dict.json", 
                 function (data) {
-            let allNames = [];
+            allRows = [];
 
             $.each(data, function (key, value) {
                 if (checkFilters(key, value.Gender, value.CVBs, value.Rarities))
@@ -31,26 +31,41 @@ function initTable(filterList) {
                     nameData.innerHTML += '<td class="rarity rarityColumn">' + 
                         rarity + '<div class=rarityInfoBtn><img src="imgs/info.png"><span>' +
                         allRarities + '</span></td>';
-                    allNames.push(nameData);
+                    allRows.push(nameData);
                 }
             });
 
-            allNames = sortEntries(allNames);
+            allRows = sortEntries(allRows);
 
-            let alternatingColor = "tableRow2";
-            const jsonContent = document.getElementById('jsonContent');
-            allNames.forEach(name => {
-                //assign color
-                alternatingColor = alternatingColor == "tableRow2" ? "tableRow1" : "tableRow2";
-                name.querySelectorAll('td').forEach(td => {
-                    td.classList.add(alternatingColor);
-                });
-
-                jsonContent.appendChild(name);
-            });
+            alternatingColor = "tableRow2";
+            loadedRows = 0;
+            for (var i = 0; i < allRows.length && i < 100; i++) {
+                addRow();
+            }
             document.getElementById("loadingMessage").className = "hidden";
         });
     });
+}
+
+function addRow() {
+    let name = allRows[loadedRows];
+
+    //assign color
+    alternatingColor = alternatingColor == "tableRow2" ? "tableRow1" : "tableRow2";
+    name.querySelectorAll('td').forEach(td => {
+        td.classList.add(alternatingColor);
+    });
+
+    jsonContent.appendChild(name);
+    loadedRows++;
+}
+
+function loadRows(table) {
+    const toAdd = table.scrollTop / 20 - (loadedRows - 100);
+
+    for (var i = 0; i < allRows.length && i < toAdd; i++) {
+        addRow();
+    }
 }
 
 function loadRarities() {
@@ -619,4 +634,8 @@ var tableWidths;
 resizeTable(true);
 var filtersList = [];
 var sortingCountry;
+var allRows;
+var loadedRows;
+var alternatingColor;
+const jsonContent = document.getElementById('jsonContent');
 initTable();

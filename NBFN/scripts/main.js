@@ -14,7 +14,7 @@ async function initTable(filterList) {
     allRows = [];
 
     for (const [key, value] of Object.entries(neatData)) {
-        if (checkFilters(key, value.Gender, value.CVBs, value.Rarities))
+        if (await checkFilters(key, value.Gender, value.CVBs, value.Rarities))
         {
             let nameData = document.createElement('tr');
             nameData.innerHTML += '<td class="name nameColumn">' + 

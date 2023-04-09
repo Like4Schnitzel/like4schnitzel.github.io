@@ -354,6 +354,7 @@ td.tableRow2 {
 #jsonDiv {
     height: 85vh;
     overflow-y: auto;
+    overflow: overlay;
     border-radius: 0px 0px 15px 15px;
     border: solid 1px rgb(141, 58, 182);
 }

@@ -86,15 +86,16 @@ function loadRarities() {
     document.getElementById('rarityLoading').classList = "";
     document.getElementById('raritySelection').classList = "hidden";
 
-    const htmlNames = document.querySelectorAll('.name');
-
     const rarities = document.querySelectorAll('.rarity');
     let i = 0;
-    rarities.forEach(rarity => {
+    allRows.forEach(row => {
+        const rarity = row.querySelector('.rarity');
+        const name = row.querySelector('.name').innerHTML;
+
         if (selectedCountry == "highest") {
-            tempRarity = maxRarity(neatData[htmlNames[i].innerHTML].Rarities);
+            tempRarity = maxRarity(neatData[name].Rarities);
         } else {
-            tempRarity = neatData[htmlNames[i].innerHTML].Rarities[selectedCountry];
+            tempRarity = neatData[name].Rarities[selectedCountry];
             if (tempRarity == undefined) tempRarity = "?";
         }
 

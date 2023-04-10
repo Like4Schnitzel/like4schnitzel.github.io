@@ -81,12 +81,10 @@ function loadRows(table) {
 }
 
 function loadRarities() {
-    const countrySelector = document.getElementById("countrySelector");
-    const selectedCountry = countrySelector.value;
+    const selectedCountry = document.getElementById("countrySelector").value;
     document.getElementById('rarityLoading').classList = "";
     document.getElementById('raritySelection').classList = "hidden";
 
-    const rarities = document.querySelectorAll('.rarity');
     let i = 0;
     allRows.forEach(row => {
         const rarity = row.querySelector('.rarity');

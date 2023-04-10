@@ -30,10 +30,18 @@ async function initTable(filterList) {
             for (const [r1, r2] of Object.entries(value.Rarities)) {
                 allRarities += r1 + ": " + r2 + "<br>";
             }
-            let rarity = value.Rarities[document.getElementById("countrySelector").value];
-            if (rarity == undefined) {
-                rarity = "?";
+            let rarity;
+            
+            const selectedCountry = document.getElementById("countrySelector").value;
+            if (selectedCountry == "highest") {
+                rarity = maxRarity(value.Rarities);
+            } else {
+                rarity = value.Rarities[selectedCountry];
+                if (rarity == undefined) {
+                    rarity = "?";
+                }
             }
+
             nameData.innerHTML += '<td class="rarity rarityColumn">' + 
                 rarity + '<div class=rarityInfoBtn><img src="imgs/info.png"><span>' +
                 allRarities + '</span></td>';
@@ -79,16 +87,17 @@ function loadRarities() {
     document.getElementById('raritySelection').classList = "hidden";
 
     const htmlNames = document.querySelectorAll('.name');
-    const textNames = [];
-    htmlNames.forEach(name => {
-        textNames.push(name.innerHTML)
-    });
 
     const rarities = document.querySelectorAll('.rarity');
     let i = 0;
     rarities.forEach(rarity => {
-        tempRarity = neatData[textNames[i]].Rarities[selectedCountry];
-        if (tempRarity == undefined) tempRarity = "?";
+        if (selectedCountry == "highest") {
+            tempRarity = maxRarity(neatData[htmlNames[i].innerHTML].Rarities);
+        } else {
+            tempRarity = neatData[htmlNames[i].innerHTML].Rarities[selectedCountry];
+            if (tempRarity == undefined) tempRarity = "?";
+        }
+
         tempRarity += rarity.querySelector(".rarityInfoBtn").outerHTML;
         rarity.innerHTML = tempRarity;
         i += 1;
@@ -96,6 +105,21 @@ function loadRarities() {
 
     document.getElementById('rarityLoading').classList = "hidden";
     document.getElementById('raritySelection').classList = "";
+}
+
+function maxRarity(nameData) {
+    let max = "~0%";
+
+    for (const [r1, r2] of Object.entries(nameData)) {
+        rNum = parseFloat(r2.substring(1, r2.length-1).replace("&lt;", "<").replace("&gt;", ">"));
+        maxNum = parseFloat(max.substring(1, max.length-1).replace("&lt;", "<").replace("&gt;", ">"))
+
+        if (maxNum < rNum) {
+            max = r2;
+        }
+    }
+
+    return max;
 }
 
 function addFilter() {
@@ -346,18 +370,18 @@ async function checkFilters(name, gender, cvbs, rarities) {
     let nameFilters = [];
     let genderFilters = [];
 
-    filtersList.forEach(async filter => {
+    filtersList.forEach(filter => {
         switch (filter[0]) {
             case 'nameSearch':
                 nameFilters.push(filter[1].value);
                 break;
 
             case 'revNameSearch':
-                currentState &&= !await nameContains(name, filter[1].value);
+                currentState &&= !nameContains(name, filter[1].value);
                 break;
 
             case 'nameLength':
-                currentState &&= await checkNameLengthFilter(name, filter);
+                currentState &&= checkNameLengthFilter(name, filter);
                 break;
 
             case 'genderFilter':
@@ -369,11 +393,11 @@ async function checkFilters(name, gender, cvbs, rarities) {
                 break;
 
             case 'CVBFilter':
-                currentState &&= await checkCVBFilter(cvbs, filter);
+                currentState &&= checkCVBFilter(cvbs, filter);
                 break;
 
             case 'rarityFilter':
-                currentState &&= await checkRarityFilter(rarities, filter);
+                currentState &&= checkRarityFilter(rarities, filter);
                 break;
         }
     });
@@ -488,12 +512,19 @@ async function checkCVBFilter(cvbs, filter) {
 
 async function checkRarityFilter(rarities, filter) {
     let toCompare;
+    const selectedCountry = filter[3].value;
 
-    toCompare = rarities[filter[3].value];
-    if (toCompare == undefined) {
-        return false;
+    if (selectedCountry == "highest") {
+        toCompare = maxRarity(rarities);
+    } else {
+        toCompare = rarities[selectedCountry];
+
+        if (toCompare == undefined) {
+            return false;
+        }
     }
-    toCompare = await toCompare.substring(1, toCompare.length-1);
+
+    toCompare = parseFloat(await toCompare.substring(1, toCompare.length-1));
 
     if (filter[1].value == "<") {
         return toCompare < parseFloat(filter[2].value);
@@ -577,12 +608,27 @@ async function extractCVBCount(arg) {
 async function extractRarity(arg) {
     const rarities = await arg.querySelector('span').innerHTML.split("<br>");
 
-    for (var i = 0; i < rarities.length-1; i++) {
-        const splitRarity = await rarities[i].split(": ");
-        splitRarity[1] = await splitRarity[1].replace("&lt;", "<").replace("&gt;", ">");
+    if (sortingCountry[2].value == "highest") {
+        let max = 0;
 
-        if (splitRarity[0] == sortingCountry[2].value) {
-            return parseFloat(await splitRarity[1].substring(1, splitRarity[1].length-1));
+        for (var i = 0; i < rarities.length-1; i++) {
+            let rarNum = await rarities[i].split(": ")[1].replace("&lt;", "<").replace("&gt;", ">");
+            rarNum = parseFloat(await rarNum.substring(1, rarNum.length-1));
+
+            if (rarNum > max) {
+                max = rarNum;
+            }
+        }
+
+        return max;
+    } else {
+        for (var i = 0; i < rarities.length-1; i++) {
+            const splitRarity = await rarities[i].split(": ");
+            splitRarity[1] = await splitRarity[1].replace("&lt;", "<").replace("&gt;", ">");
+
+            if (splitRarity[0] == sortingCountry[2].value) {
+                return parseFloat(await splitRarity[1].substring(1, splitRarity[1].length-1));
+            }
         }
     }
 

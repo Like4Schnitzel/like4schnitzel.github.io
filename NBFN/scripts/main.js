@@ -57,6 +57,8 @@ async function initTable(filterList) {
         addRow();
     }
     document.getElementById("loadingMessage").className = "hidden";
+
+    window.alert("Loaded " + allRows.length + " entries.");
 }
 
 function addRow() {
@@ -360,7 +362,7 @@ function moveFilterDown(elem) {
     elem.querySelectorAll('.arrowBtn')[1].src = "imgs/down_arrow.png";
 }
 
-async function checkFilters(name, gender, cvbs, rarities) {
+function checkFilters(name, gender, cvbs, rarities) {
     if (filters.length == 0) {
         return true;
     }
@@ -402,21 +404,21 @@ async function checkFilters(name, gender, cvbs, rarities) {
     });
 
     if (nameFilters.length > 0) {
-        currentState &&= await checkNameFilters(name, nameFilters);
+        currentState &&= checkNameFilters(name, nameFilters);
     }
 
     if (genderFilters.length > 0) {
-        currentState &&= await checkGenderFilters(gender, genderFilters);
+        currentState &&= checkGenderFilters(gender, genderFilters);
     }
 
     return currentState;
 }
 
-async function checkNameFilters(name, filters) {
+function checkNameFilters(name, filters) {
     let i = 0
 
     while (i < filters.length) {
-        if (await nameContains(name, filters[i])) {
+        if (nameContains(name, filters[i])) {
             return true;
         }
         i++;
@@ -425,7 +427,7 @@ async function checkNameFilters(name, filters) {
     return false;
 }
 
-async function nameContains(name, str) {
+function nameContains(name, str) {
     let nameIndex = 0;
     let strIndex = 0;
     let afterAny = false;
@@ -444,7 +446,7 @@ async function nameContains(name, str) {
 
             default:
                 if (afterAny) {
-                    if ((nameIndex = await findNext(name, str[strIndex], nameIndex)) == -1) {
+                    if ((nameIndex = findNext(name, str[strIndex], nameIndex)) == -1) {
                         return false;
                     }
 
@@ -468,7 +470,7 @@ async function nameContains(name, str) {
     return true;
 }
 
-async function findNext(str, c, index) {
+function findNext(str, c, index) {
     let i = index;
     while (i < str.length) {
         if (str[i] == c) {
@@ -480,7 +482,7 @@ async function findNext(str, c, index) {
     return -1;
 }
 
-async function checkNameLengthFilter(name, filter) {
+function checkNameLengthFilter(name, filter) {
     if (filter[1].value == "<") {
         return name.length < parseInt(filter[2].value);
     }
@@ -488,7 +490,7 @@ async function checkNameLengthFilter(name, filter) {
     return name.length > parseInt(filter[2].value);
 }
 
-async function checkGenderFilters(gender, filters) {
+function checkGenderFilters(gender, filters) {
     let i = 0;
 
     while (i < filters.length) {
@@ -502,14 +504,14 @@ async function checkGenderFilters(gender, filters) {
     return false;
 }
 
-async function checkCVBFilter(cvbs, filter) {
+function checkCVBFilter(cvbs, filter) {
     if (filter[1].value == "<") {
         return cvbs < parseInt(filter[2].value);
     }
     return cvbs > parseInt(filter[2].value);
 }
 
-async function checkRarityFilter(rarities, filter) {
+function checkRarityFilter(rarities, filter) {
     let toCompare;
     const selectedCountry = filter[3].value;
 
@@ -523,7 +525,7 @@ async function checkRarityFilter(rarities, filter) {
         }
     }
 
-    toCompare = parseFloat(await toCompare.substring(1, toCompare.length-1));
+    toCompare = parseFloat(toCompare.substring(1, toCompare.length-1));
 
     if (filter[1].value == "<") {
         return toCompare < parseFloat(filter[2].value);
@@ -531,13 +533,13 @@ async function checkRarityFilter(rarities, filter) {
     return toCompare > parseFloat(filter[2].value);
 }
 
-async function sortEntries(entries) {
+function sortEntries(entries) {
     if (filtersList.length > 0) {
         const sortedNames = [];
 
-        if (await hasAlphabeticSorting()) {
-            await entries.forEach(async entry => {
-                sortedNames.push(await entry.querySelector('.name').innerHTML);
+        if (hasAlphabeticSorting()) {
+            entries.forEach(entry => {
+                sortedNames.push(entry.querySelector('.name').innerHTML);
             });
         }
 
@@ -548,12 +550,12 @@ async function sortEntries(entries) {
                 case 'A-Z':
                 case 'Z-A':
                     //sanitize input
-                    await entries.forEach(async entry => {
+                    entries.forEach(entry => {
                         const name = entry.querySelector('.name');
                         name.innerHTML = sortedNames.indexOf(name.innerHTML);
                     });
 
-                    entries = await mergeSort(entries, extractNameNum, filter[1].value == 'Z-A');
+                    entries = mergeSort(entries, extractNameNum, filter[1].value == 'Z-A');
 
                     //unsanitize
                     entries.forEach(entry => {
@@ -564,17 +566,17 @@ async function sortEntries(entries) {
 
                 case 'lenAsc':
                 case 'lenDesc':
-                    entries = await mergeSort(entries, extractNameLen, filter[1].value == 'lenDesc');
+                    entries = mergeSort(entries, extractNameLen, filter[1].value == 'lenDesc');
                     break;
 
                 case 'cvbAsc':
                 case 'cvbDesc':
-                    entries = await mergeSort(entries, extractCVBCount, filter[1].value == 'cvbDesc');
+                    entries = mergeSort(entries, extractCVBCount, filter[1].value == 'cvbDesc');
 
                 case 'rarityAsc':
                 case 'rarityDesc':
                     sortingCountry = filter;
-                    entries = await mergeSort(entries, extractRarity, filter[1].value == 'rarityDesc');
+                    entries = mergeSort(entries, extractRarity, filter[1].value == 'rarityDesc');
             }
         }
     }
@@ -582,7 +584,7 @@ async function sortEntries(entries) {
     return entries;
 }
 
-async function hasAlphabeticSorting() {
+function hasAlphabeticSorting() {
     for (var i = 0; i < filtersList.length; i++) {
         if (filtersList[i][1].value == 'A-Z' || filtersList[i][1].value == 'Z-A') {
             return true;
@@ -592,27 +594,27 @@ async function hasAlphabeticSorting() {
     return false;
 }
 
-async function extractNameNum(arg) {
-    return parseInt(await arg.querySelector('.name').innerHTML);
+function extractNameNum(arg) {
+    return parseInt(arg.querySelector('.name').innerHTML);
 }
 
-async function extractNameLen(arg) {
-    return await arg.querySelector('.name').innerHTML.length;
+function extractNameLen(arg) {
+    return arg.querySelector('.name').innerHTML.length;
 }
 
-async function extractCVBCount(arg) {
-    return parseInt(await arg.querySelector('.cvbColumn').innerHTML);
+function extractCVBCount(arg) {
+    return parseInt(arg.querySelector('.cvbColumn').innerHTML);
 }
 
-async function extractRarity(arg) {
-    const rarities = await arg.querySelector('span').innerHTML.split("<br>");
+function extractRarity(arg) {
+    const rarities = arg.querySelector('span').innerHTML.split("<br>");
 
     if (sortingCountry[2].value == "highest") {
         let max = 0;
 
         for (var i = 0; i < rarities.length-1; i++) {
-            let rarNum = await rarities[i].split(": ")[1].replace("&lt;", "<").replace("&gt;", ">");
-            rarNum = parseFloat(await rarNum.substring(1, rarNum.length-1));
+            let rarNum = rarities[i].split(": ")[1].replace("&lt;", "<").replace("&gt;", ">");
+            rarNum = parseFloat(rarNum.substring(1, rarNum.length-1));
 
             if (rarNum > max) {
                 max = rarNum;
@@ -622,11 +624,11 @@ async function extractRarity(arg) {
         return max;
     } else {
         for (var i = 0; i < rarities.length-1; i++) {
-            const splitRarity = await rarities[i].split(": ");
-            splitRarity[1] = await splitRarity[1].replace("&lt;", "<").replace("&gt;", ">");
+            const splitRarity = rarities[i].split(": ");
+            splitRarity[1] = splitRarity[1].replace("&lt;", "<").replace("&gt;", ">");
 
             if (splitRarity[0] == sortingCountry[2].value) {
-                return parseFloat(await splitRarity[1].substring(1, splitRarity[1].length-1));
+                return parseFloat(splitRarity[1].substring(1, splitRarity[1].length-1));
             }
         }
     }
@@ -638,23 +640,23 @@ async function extractRarity(arg) {
     return 101;
 }
 
-async function mergeSort(entries, extractInfo, reverse) {
+function mergeSort(entries, extractInfo, reverse) {
     if (entries.length < 2) {
         return entries;
     }
 
-    const left = await entries.splice(0, entries.length / 2);
-    return await merge(await mergeSort(left, extractInfo, reverse), await mergeSort(entries, extractInfo, reverse), extractInfo, reverse);
+    const left = entries.splice(0, entries.length / 2);
+    return merge(mergeSort(left, extractInfo, reverse), mergeSort(entries, extractInfo, reverse), extractInfo, reverse);
 }
 
-async function merge(left, right, extractInfo, reverse) {
+function merge(left, right, extractInfo, reverse) {
     const arr = [];
 
     while (left.length && right.length) {
-        if ((!reverse && await extractInfo(left[0]) < await extractInfo(right[0])) || (reverse && await extractInfo(left[0]) > await extractInfo(right[0])) || (await extractInfo(left[0]) == await extractInfo(right[0]))) {
-            arr.push(await left.shift());
+        if ((!reverse && extractInfo(left[0]) < extractInfo(right[0])) || (reverse && extractInfo(left[0]) > extractInfo(right[0])) || (extractInfo(left[0]) == extractInfo(right[0]))) {
+            arr.push(left.shift());
         } else {
-            arr.push(await right.shift());
+            arr.push(right.shift());
         }
     }
 

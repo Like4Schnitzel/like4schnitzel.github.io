@@ -2,9 +2,16 @@
     --about-text-color: ivory;
 }
 
+html {
+    height: 100%;
+}
+
 body {
-    background-color: #f9aec4;
-    margin-top: 0px;
+    height: 100%;
+    margin: 0;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-image: linear-gradient(#6c2f88, #4e2f73);
 }
 
 details {
@@ -161,7 +168,7 @@ td.tableRow2 {
 .about {
     flex-basis: 30%;
     height: fit-content;
-    background-color: rgb(164, 87, 237);
+    background-color: #9569a9;
     border-radius: 15px;
     border: 1px solid black;
 }
@@ -211,17 +218,17 @@ td.tableRow2 {
     padding-top: 2%;
     padding-bottom: 2%;
     border-radius: 5px;
-    background-color: aquamarine;
+    background-color: #cda7d1;
     border: solid 1px black;
     cursor: pointer;
 }
 
 #applyFilters:hover {
-    background-color: rgb(79, 238, 185);
+    background-color: #cd97d1;
 }
 
 #applyFilters:active {
-    background-color: rgb(28, 228, 161);
+    background-color: #cd87d1;
 }
 
 .filter {
@@ -309,22 +316,18 @@ td.tableRow2 {
 
 .table {
     table-layout: fixed;
-    background-color: rgb(221, 85, 217);
+    background-color: #cb63d9;
     margin-left: auto;
     margin-right: auto;
     border-radius: 15px;
 }
 
-.tableHeaderRow {
-    background-color: deeppink;
-}
-
 .tableRow1 {
-    background-color: #ff89eb;
+    background-color: #e1a5e9;
 }
 
 .tableRow2 {
-    background-color: #ff60d5;
+    background-color: #d785e1;
 }
 
 #countrySelector {
@@ -349,6 +352,7 @@ td.tableRow2 {
 }
 
 .title {
+    color: rgb(240, 252, 255);
     padding-top: 25px;
     padding-bottom: 25px;
     width: fit-content;

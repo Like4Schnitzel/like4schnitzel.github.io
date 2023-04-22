@@ -2,6 +2,26 @@
     --about-text-color: ivory;
 }
 
+@keyframes invisiblyGrowFontSize {
+	0% {
+    font-size: 0;
+    opacity: 0;
+	}
+	100% {
+    font-size: 1em;
+    opacity: 0;
+	}
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
 html {
     height: 100%;
 }
@@ -39,6 +59,12 @@ img.icon {
 
 details[open] img.icon {
     transform: rotate(-90deg);
+}
+
+details[open] .detailsContent {
+    animation-name: invisiblyGrowFontSize, fadeIn;
+    animation-duration: 300ms, 200ms;
+    animation-delay: 0ms, 300ms;
 }
 
 summary {

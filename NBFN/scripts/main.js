@@ -677,6 +677,14 @@ function resizeTable(init=false) {
     document.head.appendChild(tableWidths)
 }
 
+if (window.confirm(
+    "This website is outdated and has been rewritten.\n\
+By pressing OK you will be redirected to the new and improved site at https://www.like4schnitzel.at/NBFN/.\n\
+Press cancel if you REALLY want to take a look at this very bad version of the site."
+    )) {
+        window.location.href = "https://www.like4schnitzel.at/NBFN/";
+}
+
 var tableWidths;
 resizeTable(true);
 var filtersList = [];
